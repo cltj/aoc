@@ -5,9 +5,10 @@ description = ""
 authors = ["Daniel Hjertholm <daniel.hjertholm@icloud.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.8"
 advent-of-code-data = "^1.1.0"
 pydantic = "^1.8.2"
+numpy = "^1.21.4"
 
 [tool.poetry.dev-dependencies]
 

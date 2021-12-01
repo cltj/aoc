@@ -1,10 +1,12 @@
-from aocd import get_data
+from aocd.models import Puzzle
+import numpy as np
 
 
-def lines(*args, **kwargs):
-    string = get_data(*args, **kwargs)
-    return string.splitlines()
+class NumPuzzle(Puzzle):
+    @property
+    def input_data_num(self):
+        return [int(n) for n in self.input_data.splitlines()]
 
-
-def numbers(*args, **kwargs):
-    return [int(line) for line in lines(*args, **kwargs)]
+    @property
+    def input_data_array(self):
+        return np.array(self.input_data_num)
