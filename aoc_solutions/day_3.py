@@ -1,20 +1,18 @@
 from aoc_solutions.tools import PuzzleExt
-import numpy as np
 
 
-def solve_part_one(numbers: np.ndarray) -> int:
-    return (numbers[1:] > numbers[:-1]).sum()
+def solve_part_one(lines: list) -> int:
+    ...
 
 
-def solve_part_two(numbers: np.ndarray) -> int:
-    sum_of_three = np.convolve(numbers, np.ones(3), 'valid')
-    return solve_part_one(sum_of_three)
+def solve_part_two(lines: list) -> int:
+    ...
 
 
 if __name__ == '__main__':
-    puzzle = PuzzleExt(day=1, year=2021)
-    example_data = puzzle.example_data_array
-    real_data = puzzle.input_data_array
+    puzzle = PuzzleExt()
+    example_data = puzzle.example_data_list
+    real_data = puzzle.input_data_list
 
     if (result := solve_part_one(example_data)) == puzzle.example_answer_one:
         print(f'Part one: {result} is the correct answer with example data')

@@ -1,15 +1,21 @@
+import inspect
+
 from aocd.models import Puzzle
 import numpy as np
 import pandas as pd
 from pathlib import Path
+import re
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
 
-class NumPuzzle(Puzzle):
-    def __init__(self, day, *args, **kwargs):
-        super().__init__(day=day, *args, **kwargs)
+class PuzzleExt(Puzzle):
+    def __init__(self, day=None, year=2021, *args, **kwargs):
+        if day is None:
+            caller_filename = inspect.getmodule(inspect.stack()[1][0]).__file__
+            day = int(re.search(r'\d+', caller_filename).group())
+        super().__init__(day=day, year=year, *args, **kwargs)
         with open(PROJECT_DIR / f"example_data/day_{self.day}/input") as f:
             self.example_data = f.read().strip()
         with open(PROJECT_DIR / f"example_data/day_{self.day}/answer_one") as f:

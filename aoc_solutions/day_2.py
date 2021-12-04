@@ -63,7 +63,7 @@ Using this new interpretation of the commands, calculate the horizontal position
 
 """
 
-from aoc_solutions.tools import NumPuzzle
+from aoc_solutions.tools import PuzzleExt
 import pandas as pd
 
 
@@ -94,7 +94,7 @@ def solve_part_two(lines: list) -> int:
 
 
 if __name__ == '__main__':
-    puzzle = NumPuzzle(day=2, year=2021)
+    puzzle = PuzzleExt(day=2, year=2021)
     example_data = puzzle.example_data_list
     real_data = puzzle.input_data_list
 
