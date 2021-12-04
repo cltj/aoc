@@ -13,9 +13,17 @@ class NumPuzzle(Puzzle):
         with open(PROJECT_DIR / f"example_data/day_{self.day}/input") as f:
             self.example_data = f.read().strip()
         with open(PROJECT_DIR / f"example_data/day_{self.day}/answer_one") as f:
-            self.example_answer_one = f.read().strip()
+            answer_one = f.read().strip()
+            try:
+                self.example_answer_one = int(answer_one)
+            except ValueError:
+                self.example_answer_one = answer_one
         with open(PROJECT_DIR / f"example_data/day_{self.day}/answer_two") as f:
-            self.example_answer_two = f.read().strip()
+            answer_two = f.read().strip()
+            try:
+                self.example_answer_two = int(answer_two)
+            except ValueError:
+                self.example_answer_two = answer_two
 
     @property
     def input_data_list(self):

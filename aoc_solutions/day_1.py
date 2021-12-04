@@ -16,8 +16,14 @@ if __name__ == '__main__':
     example_data = puzzle.example_data_array
     real_data = puzzle.input_data_array
 
-    if solve_part_one(example_data) == puzzle.example_answer_one:
+    if (result := solve_part_one(example_data)) == puzzle.example_answer_one:
+        print(f'Part one: {result} is the correct answer with example data')
         puzzle.answer_a = solve_part_one(real_data)
+    else:
+        print(f'Part one: {result} is wrong, should be {puzzle.example_answer_one}')
 
-    if solve_part_two(example_data) == puzzle.example_answer_two:
+    if (result := solve_part_two(example_data)) == puzzle.example_answer_two:
+        print(f'Part two: {result} is the correct answer with example data')
         puzzle.answer_b = solve_part_two(real_data)
+    else:
+        print(f'Part two: {result} is wrong, should be {puzzle.example_answer_two}')
