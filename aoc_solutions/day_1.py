@@ -13,6 +13,7 @@ def solve_part_two(numbers: np.ndarray) -> int:
 
 if __name__ == '__main__':
     puzzle = PuzzleExt(day=1, year=2021)
+    print(puzzle.input_data)
     example_data = puzzle.example_data_array
     real_data = puzzle.input_data_array
 
