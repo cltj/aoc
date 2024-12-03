@@ -1,0 +1,158 @@
+─────────────────────────────────────────────────── Day 16: Proboscidea Volcanium ────────────────────────────────────────────────────
+
+The sensors have led you to the origin of the distress signal: yet another handheld device, just like the one the Elves gave you. 
+However, you don't see any Elves around; instead, the device is surrounded by elephants! They must have gotten lost in these tunnels, 
+and one of the elephants apparently figured out how to turn on the distress signal.
+
+The ground rumbles again, much stronger this time. What kind of cave is this, exactly? You scan the cave with your handheld device; it
+reports mostly igneous rock, some ash, pockets of pressurized gas, magma... this isn't just a cave, it's a volcano!
+
+You need to get the elephants out of here, quickly. Your device estimates that you have 30 minutes before the volcano erupts, so you 
+don't have time to go back out the way you came in.
+
+You scan the cave for other options and discover a network of pipes and pressure-release valves. You aren't sure how such a system got
+into a volcano, but you don't have time to complain; your device produces a report (your puzzle input) of each valve's flow rate if it
+were opened (in pressure per minute) and the tunnels you could use to move between the valves.
+
+There's even a valve in the room you and the elephants are currently standing in labeled AA. You estimate it will take you one minute 
+to open a single valve and one minute to follow any tunnel from one valve to another. What is the most pressure you could release?
+
+For example, suppose you had the following scan output:
+
+     1 │ Valve AA has flow rate=0; tunnels lead to valves DD, II, BB                                                                  
+     2 │ Valve BB has flow rate=13; tunnels lead to valves CC, AA                                                                     
+     3 │ Valve CC has flow rate=2; tunnels lead to valves DD, BB                                                                      
+     4 │ Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE                                                                 
+     5 │ Valve EE has flow rate=3; tunnels lead to valves FF, DD                                                                      
+     6 │ Valve FF has flow rate=0; tunnels lead to valves EE, GG                                                                      
+     7 │ Valve GG has flow rate=0; tunnels lead to valves FF, HH                                                                      
+     8 │ Valve HH has flow rate=22; tunnel leads to valve GG                                                                          
+     9 │ Valve II has flow rate=0; tunnels lead to valves AA, JJ                                                                      
+    10 │ Valve JJ has flow rate=21; tunnel leads to valve II                                                                          
+
+All of the valves begin closed. You start at valve AA, but it must be damaged or jammed or something: its flow rate is 0, so there's 
+no point in opening it. However, you could spend one minute moving to valve BB and another minute opening it; doing so would release 
+pressure during the remaining 28 minutes at a flow rate of 13, a total eventual pressure release of 28 * 13 = 364. Then, you could 
+spend your third minute moving to valve CC and your fourth minute opening it, providing an additional 26 minutes of eventual pressure 
+release at a flow rate of 2, or 52 total pressure released by valve CC.
+
+Making your way through the tunnels like this, you could probably open many or all of the valves by the time 30 minutes have elapsed. 
+However, you need to release as much pressure as possible, so you'll need to be methodical. Instead, consider this approach:
+
+      1 │ == Minute 1 ==                                                                                                              
+      2 │ No valves are open.                                                                                                         
+      3 │ You move to valve DD.                                                                                                       
+      4 │                                                                                                                             
+      5 │ == Minute 2 ==                                                                                                              
+      6 │ No valves are open.                                                                                                         
+      7 │ You open valve DD.                                                                                                          
+      8 │                                                                                                                             
+      9 │ == Minute 3 ==                                                                                                              
+     10 │ Valve DD is open, releasing 20 pressure.                                                                                    
+     11 │ You move to valve CC.                                                                                                       
+     12 │                                                                                                                             
+     13 │ == Minute 4 ==                                                                                                              
+     14 │ Valve DD is open, releasing 20 pressure.                                                                                    
+     15 │ You move to valve BB.                                                                                                       
+     16 │                                                                                                                             
+     17 │ == Minute 5 ==                                                                                                              
+     18 │ Valve DD is open, releasing 20 pressure.                                                                                    
+     19 │ You open valve BB.                                                                                                          
+     20 │                                                                                                                             
+     21 │ == Minute 6 ==                                                                                                              
+     22 │ Valves BB and DD are open, releasing 33 pressure.                                                                           
+     23 │ You move to valve AA.                                                                                                       
+     24 │                                                                                                                             
+     25 │ == Minute 7 ==                                                                                                              
+     26 │ Valves BB and DD are open, releasing 33 pressure.                                                                           
+     27 │ You move to valve II.                                                                                                       
+     28 │                                                                                                                             
+     29 │ == Minute 8 ==                                                                                                              
+     30 │ Valves BB and DD are open, releasing 33 pressure.                                                                           
+     31 │ You move to valve JJ.                                                                                                       
+     32 │                                                                                                                             
+     33 │ == Minute 9 ==                                                                                                              
+     34 │ Valves BB and DD are open, releasing 33 pressure.                                                                           
+     35 │ You open valve JJ.                                                                                                          
+     36 │                                                                                                                             
+     37 │ == Minute 10 ==                                                                                                             
+     38 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     39 │ You move to valve II.                                                                                                       
+     40 │                                                                                                                             
+     41 │ == Minute 11 ==                                                                                                             
+     42 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     43 │ You move to valve AA.                                                                                                       
+     44 │                                                                                                                             
+     45 │ == Minute 12 ==                                                                                                             
+     46 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     47 │ You move to valve DD.                                                                                                       
+     48 │                                                                                                                             
+     49 │ == Minute 13 ==                                                                                                             
+     50 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     51 │ You move to valve EE.                                                                                                       
+     52 │                                                                                                                             
+     53 │ == Minute 14 ==                                                                                                             
+     54 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     55 │ You move to valve FF.                                                                                                       
+     56 │                                                                                                                             
+     57 │ == Minute 15 ==                                                                                                             
+     58 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     59 │ You move to valve GG.                                                                                                       
+     60 │                                                                                                                             
+     61 │ == Minute 16 ==                                                                                                             
+     62 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     63 │ You move to valve HH.                                                                                                       
+     64 │                                                                                                                             
+     65 │ == Minute 17 ==                                                                                                             
+     66 │ Valves BB, DD, and JJ are open, releasing 54 pressure.                                                                      
+     67 │ You open valve HH.                                                                                                          
+     68 │                                                                                                                             
+     69 │ == Minute 18 ==                                                                                                             
+     70 │ Valves BB, DD, HH, and JJ are open, releasing 76 pressure.                                                                  
+     71 │ You move to valve GG.                                                                                                       
+     72 │                                                                                                                             
+     73 │ == Minute 19 ==                                                                                                             
+     74 │ Valves BB, DD, HH, and JJ are open, releasing 76 pressure.                                                                  
+     75 │ You move to valve FF.                                                                                                       
+     76 │                                                                                                                             
+     77 │ == Minute 20 ==                                                                                                             
+     78 │ Valves BB, DD, HH, and JJ are open, releasing 76 pressure.                                                                  
+     79 │ You move to valve EE.                                                                                                       
+     80 │                                                                                                                             
+     81 │ == Minute 21 ==                                                                                                             
+     82 │ Valves BB, DD, HH, and JJ are open, releasing 76 pressure.                                                                  
+     83 │ You open valve EE.                                                                                                          
+     84 │                                                                                                                             
+     85 │ == Minute 22 ==                                                                                                             
+     86 │ Valves BB, DD, EE, HH, and JJ are open, releasing 79 pressure.                                                              
+     87 │ You move to valve DD.                                                                                                       
+     88 │                                                                                                                             
+     89 │ == Minute 23 ==                                                                                                             
+     90 │ Valves BB, DD, EE, HH, and JJ are open, releasing 79 pressure.                                                              
+     91 │ You move to valve CC.                                                                                                       
+     92 │                                                                                                                             
+     93 │ == Minute 24 ==                                                                                                             
+     94 │ Valves BB, DD, EE, HH, and JJ are open, releasing 79 pressure.                                                              
+     95 │ You open valve CC.                                                                                                          
+     96 │                                                                                                                             
+     97 │ == Minute 25 ==                                                                                                             
+     98 │ Valves BB, CC, DD, EE, HH, and JJ are open, releasing 81 pressure.                                                          
+     99 │                                                                                                                             
+    100 │ == Minute 26 ==                                                                                                             
+    101 │ Valves BB, CC, DD, EE, HH, and JJ are open, releasing 81 pressure.                                                          
+    102 │                                                                                                                             
+    103 │ == Minute 27 ==                                                                                                             
+    104 │ Valves BB, CC, DD, EE, HH, and JJ are open, releasing 81 pressure.                                                          
+    105 │                                                                                                                             
+    106 │ == Minute 28 ==                                                                                                             
+    107 │ Valves BB, CC, DD, EE, HH, and JJ are open, releasing 81 pressure.                                                          
+    108 │                                                                                                                             
+    109 │ == Minute 29 ==                                                                                                             
+    110 │ Valves BB, CC, DD, EE, HH, and JJ are open, releasing 81 pressure.                                                          
+    111 │                                                                                                                             
+    112 │ == Minute 30 ==                                                                                                             
+    113 │ Valves BB, CC, DD, EE, HH, and JJ are open, releasing 81 pressure.                                                          
+
+This approach lets you release the most pressure possible in 30 minutes with this valve layout, 1651.
+
+Work out the steps to release the most pressure in 30 minutes. What is the most pressure you can release?

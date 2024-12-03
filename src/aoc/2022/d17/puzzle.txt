@@ -1,0 +1,348 @@
+────────────────────────────────────────────────────── Day 17: Pyroclastic Flow ──────────────────────────────────────────────────────
+
+Your handheld device has located an alternative exit from the cave for you and the elephants.  The ground is rumbling almost 
+continuously now, but the strange valves bought you some time. It's definitely getting warmer in here, though.
+
+The tunnels eventually open into a very tall, narrow chamber. Large, oddly-shaped rocks are falling into the chamber from above, 
+presumably due to all the rumbling. If you can't work out where the rocks will fall next, you might be crushed!
+
+The five types of rocks have the following peculiar shapes, where # is rock and . is empty space:
+
+     1 │ ####                                                                                                                         
+     2 │                                                                                                                              
+     3 │ .#.                                                                                                                          
+     4 │ ###                                                                                                                          
+     5 │ .#.                                                                                                                          
+     6 │                                                                                                                              
+     7 │ ..#                                                                                                                          
+     8 │ ..#                                                                                                                          
+     9 │ ###                                                                                                                          
+    10 │                                                                                                                              
+    11 │ #                                                                                                                            
+    12 │ #                                                                                                                            
+    13 │ #                                                                                                                            
+    14 │ #                                                                                                                            
+    15 │                                                                                                                              
+    16 │ ##                                                                                                                           
+    17 │ ##                                                                                                                           
+
+The rocks fall in the order shown above: first the - shape, then the + shape, and so on. Once the end of the list is reached, the same
+order repeats: the - shape falls first, sixth, 11th, 16th, etc.
+
+The rocks don't spin, but they do get pushed around by jets of hot gas coming out of the walls themselves. A quick scan reveals the 
+effect the jets of hot gas will have on the rocks as they fall (your puzzle input).
+
+For example, suppose this was the jet pattern in your cave:
+
+    1 │ >>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>                                                                                      
+
+In jet patterns, < means a push to the left, while > means a push to the right. The pattern above means that the jets will push a 
+falling rock right, then right, then right, then left, then left, then right, and so on. If the end of the list is reached, it 
+repeats.
+
+The tall, vertical chamber is exactly seven units wide. Each rock appears so that its left edge is two units away from the left wall 
+and its bottom edge is three units above the highest rock in the room (or the floor, if there isn't one).
+
+After a rock appears, it alternates between being pushed by a jet of hot gas one unit (in the direction indicated by the next symbol 
+in the jet pattern) and then falling one unit down. If any movement would cause any part of the rock to move into the walls, floor, or
+a stopped rock, the movement instead does not occur. If a downward movement would have caused a falling rock to move into the floor or
+an already-fallen rock, the falling rock stops where it is (having landed on something) and a new rock immediately begins falling.
+
+Drawing falling rocks with @ and stopped rocks with #, the jet pattern in the example above manifests as follows:
+
+      1 │ The first rock begins falling:                                                                                              
+      2 │ |..@@@@.|                                                                                                                   
+      3 │ |.......|                                                                                                                   
+      4 │ |.......|                                                                                                                   
+      5 │ |.......|                                                                                                                   
+      6 │ +-------+                                                                                                                   
+      7 │                                                                                                                             
+      8 │ Jet of gas pushes rock right:                                                                                               
+      9 │ |...@@@@|                                                                                                                   
+     10 │ |.......|                                                                                                                   
+     11 │ |.......|                                                                                                                   
+     12 │ |.......|                                                                                                                   
+     13 │ +-------+                                                                                                                   
+     14 │                                                                                                                             
+     15 │ Rock falls 1 unit:                                                                                                          
+     16 │ |...@@@@|                                                                                                                   
+     17 │ |.......|                                                                                                                   
+     18 │ |.......|                                                                                                                   
+     19 │ +-------+                                                                                                                   
+     20 │                                                                                                                             
+     21 │ Jet of gas pushes rock right, but nothing happens:                                                                          
+     22 │ |...@@@@|                                                                                                                   
+     23 │ |.......|                                                                                                                   
+     24 │ |.......|                                                                                                                   
+     25 │ +-------+                                                                                                                   
+     26 │                                                                                                                             
+     27 │ Rock falls 1 unit:                                                                                                          
+     28 │ |...@@@@|                                                                                                                   
+     29 │ |.......|                                                                                                                   
+     30 │ +-------+                                                                                                                   
+     31 │                                                                                                                             
+     32 │ Jet of gas pushes rock right, but nothing happens:                                                                          
+     33 │ |...@@@@|                                                                                                                   
+     34 │ |.......|                                                                                                                   
+     35 │ +-------+                                                                                                                   
+     36 │                                                                                                                             
+     37 │ Rock falls 1 unit:                                                                                                          
+     38 │ |...@@@@|                                                                                                                   
+     39 │ +-------+                                                                                                                   
+     40 │                                                                                                                             
+     41 │ Jet of gas pushes rock left:                                                                                                
+     42 │ |..@@@@.|                                                                                                                   
+     43 │ +-------+                                                                                                                   
+     44 │                                                                                                                             
+     45 │ Rock falls 1 unit, causing it to come to rest:                                                                              
+     46 │ |..####.|                                                                                                                   
+     47 │ +-------+                                                                                                                   
+     48 │                                                                                                                             
+     49 │ A new rock begins falling:                                                                                                  
+     50 │ |...@...|                                                                                                                   
+     51 │ |..@@@..|                                                                                                                   
+     52 │ |...@...|                                                                                                                   
+     53 │ |.......|                                                                                                                   
+     54 │ |.......|                                                                                                                   
+     55 │ |.......|                                                                                                                   
+     56 │ |..####.|                                                                                                                   
+     57 │ +-------+                                                                                                                   
+     58 │                                                                                                                             
+     59 │ Jet of gas pushes rock left:                                                                                                
+     60 │ |..@....|                                                                                                                   
+     61 │ |.@@@...|                                                                                                                   
+     62 │ |..@....|                                                                                                                   
+     63 │ |.......|                                                                                                                   
+     64 │ |.......|                                                                                                                   
+     65 │ |.......|                                                                                                                   
+     66 │ |..####.|                                                                                                                   
+     67 │ +-------+                                                                                                                   
+     68 │                                                                                                                             
+     69 │ Rock falls 1 unit:                                                                                                          
+     70 │ |..@....|                                                                                                                   
+     71 │ |.@@@...|                                                                                                                   
+     72 │ |..@....|                                                                                                                   
+     73 │ |.......|                                                                                                                   
+     74 │ |.......|                                                                                                                   
+     75 │ |..####.|                                                                                                                   
+     76 │ +-------+                                                                                                                   
+     77 │                                                                                                                             
+     78 │ Jet of gas pushes rock right:                                                                                               
+     79 │ |...@...|                                                                                                                   
+     80 │ |..@@@..|                                                                                                                   
+     81 │ |...@...|                                                                                                                   
+     82 │ |.......|                                                                                                                   
+     83 │ |.......|                                                                                                                   
+     84 │ |..####.|                                                                                                                   
+     85 │ +-------+                                                                                                                   
+     86 │                                                                                                                             
+     87 │ Rock falls 1 unit:                                                                                                          
+     88 │ |...@...|                                                                                                                   
+     89 │ |..@@@..|                                                                                                                   
+     90 │ |...@...|                                                                                                                   
+     91 │ |.......|                                                                                                                   
+     92 │ |..####.|                                                                                                                   
+     93 │ +-------+                                                                                                                   
+     94 │                                                                                                                             
+     95 │ Jet of gas pushes rock left:                                                                                                
+     96 │ |..@....|                                                                                                                   
+     97 │ |.@@@...|                                                                                                                   
+     98 │ |..@....|                                                                                                                   
+     99 │ |.......|                                                                                                                   
+    100 │ |..####.|                                                                                                                   
+    101 │ +-------+                                                                                                                   
+    102 │                                                                                                                             
+    103 │ Rock falls 1 unit:                                                                                                          
+    104 │ |..@....|                                                                                                                   
+    105 │ |.@@@...|                                                                                                                   
+    106 │ |..@....|                                                                                                                   
+    107 │ |..####.|                                                                                                                   
+    108 │ +-------+                                                                                                                   
+    109 │                                                                                                                             
+    110 │ Jet of gas pushes rock right:                                                                                               
+    111 │ |...@...|                                                                                                                   
+    112 │ |..@@@..|                                                                                                                   
+    113 │ |...@...|                                                                                                                   
+    114 │ |..####.|                                                                                                                   
+    115 │ +-------+                                                                                                                   
+    116 │                                                                                                                             
+    117 │ Rock falls 1 unit, causing it to come to rest:                                                                              
+    118 │ |...#...|                                                                                                                   
+    119 │ |..###..|                                                                                                                   
+    120 │ |...#...|                                                                                                                   
+    121 │ |..####.|                                                                                                                   
+    122 │ +-------+                                                                                                                   
+    123 │                                                                                                                             
+    124 │ A new rock begins falling:                                                                                                  
+    125 │ |....@..|                                                                                                                   
+    126 │ |....@..|                                                                                                                   
+    127 │ |..@@@..|                                                                                                                   
+    128 │ |.......|                                                                                                                   
+    129 │ |.......|                                                                                                                   
+    130 │ |.......|                                                                                                                   
+    131 │ |...#...|                                                                                                                   
+    132 │ |..###..|                                                                                                                   
+    133 │ |...#...|                                                                                                                   
+    134 │ |..####.|                                                                                                                   
+    135 │ +-------+                                                                                                                   
+
+The moment each of the next few rocks begins falling, you would see this:
+
+      1 │ |..@....|                                                                                                                   
+      2 │ |..@....|                                                                                                                   
+      3 │ |..@....|                                                                                                                   
+      4 │ |..@....|                                                                                                                   
+      5 │ |.......|                                                                                                                   
+      6 │ |.......|                                                                                                                   
+      7 │ |.......|                                                                                                                   
+      8 │ |..#....|                                                                                                                   
+      9 │ |..#....|                                                                                                                   
+     10 │ |####...|                                                                                                                   
+     11 │ |..###..|                                                                                                                   
+     12 │ |...#...|                                                                                                                   
+     13 │ |..####.|                                                                                                                   
+     14 │ +-------+                                                                                                                   
+     15 │                                                                                                                             
+     16 │ |..@@...|                                                                                                                   
+     17 │ |..@@...|                                                                                                                   
+     18 │ |.......|                                                                                                                   
+     19 │ |.......|                                                                                                                   
+     20 │ |.......|                                                                                                                   
+     21 │ |....#..|                                                                                                                   
+     22 │ |..#.#..|                                                                                                                   
+     23 │ |..#.#..|                                                                                                                   
+     24 │ |#####..|                                                                                                                   
+     25 │ |..###..|                                                                                                                   
+     26 │ |...#...|                                                                                                                   
+     27 │ |..####.|                                                                                                                   
+     28 │ +-------+                                                                                                                   
+     29 │                                                                                                                             
+     30 │ |..@@@@.|                                                                                                                   
+     31 │ |.......|                                                                                                                   
+     32 │ |.......|                                                                                                                   
+     33 │ |.......|                                                                                                                   
+     34 │ |....##.|                                                                                                                   
+     35 │ |....##.|                                                                                                                   
+     36 │ |....#..|                                                                                                                   
+     37 │ |..#.#..|                                                                                                                   
+     38 │ |..#.#..|                                                                                                                   
+     39 │ |#####..|                                                                                                                   
+     40 │ |..###..|                                                                                                                   
+     41 │ |...#...|                                                                                                                   
+     42 │ |..####.|                                                                                                                   
+     43 │ +-------+                                                                                                                   
+     44 │                                                                                                                             
+     45 │ |...@...|                                                                                                                   
+     46 │ |..@@@..|                                                                                                                   
+     47 │ |...@...|                                                                                                                   
+     48 │ |.......|                                                                                                                   
+     49 │ |.......|                                                                                                                   
+     50 │ |.......|                                                                                                                   
+     51 │ |.####..|                                                                                                                   
+     52 │ |....##.|                                                                                                                   
+     53 │ |....##.|                                                                                                                   
+     54 │ |....#..|                                                                                                                   
+     55 │ |..#.#..|                                                                                                                   
+     56 │ |..#.#..|                                                                                                                   
+     57 │ |#####..|                                                                                                                   
+     58 │ |..###..|                                                                                                                   
+     59 │ |...#...|                                                                                                                   
+     60 │ |..####.|                                                                                                                   
+     61 │ +-------+                                                                                                                   
+     62 │                                                                                                                             
+     63 │ |....@..|                                                                                                                   
+     64 │ |....@..|                                                                                                                   
+     65 │ |..@@@..|                                                                                                                   
+     66 │ |.......|                                                                                                                   
+     67 │ |.......|                                                                                                                   
+     68 │ |.......|                                                                                                                   
+     69 │ |..#....|                                                                                                                   
+     70 │ |.###...|                                                                                                                   
+     71 │ |..#....|                                                                                                                   
+     72 │ |.####..|                                                                                                                   
+     73 │ |....##.|                                                                                                                   
+     74 │ |....##.|                                                                                                                   
+     75 │ |....#..|                                                                                                                   
+     76 │ |..#.#..|                                                                                                                   
+     77 │ |..#.#..|                                                                                                                   
+     78 │ |#####..|                                                                                                                   
+     79 │ |..###..|                                                                                                                   
+     80 │ |...#...|                                                                                                                   
+     81 │ |..####.|                                                                                                                   
+     82 │ +-------+                                                                                                                   
+     83 │                                                                                                                             
+     84 │ |..@....|                                                                                                                   
+     85 │ |..@....|                                                                                                                   
+     86 │ |..@....|                                                                                                                   
+     87 │ |..@....|                                                                                                                   
+     88 │ |.......|                                                                                                                   
+     89 │ |.......|                                                                                                                   
+     90 │ |.......|                                                                                                                   
+     91 │ |.....#.|                                                                                                                   
+     92 │ |.....#.|                                                                                                                   
+     93 │ |..####.|                                                                                                                   
+     94 │ |.###...|                                                                                                                   
+     95 │ |..#....|                                                                                                                   
+     96 │ |.####..|                                                                                                                   
+     97 │ |....##.|                                                                                                                   
+     98 │ |....##.|                                                                                                                   
+     99 │ |....#..|                                                                                                                   
+    100 │ |..#.#..|                                                                                                                   
+    101 │ |..#.#..|                                                                                                                   
+    102 │ |#####..|                                                                                                                   
+    103 │ |..###..|                                                                                                                   
+    104 │ |...#...|                                                                                                                   
+    105 │ |..####.|                                                                                                                   
+    106 │ +-------+                                                                                                                   
+    107 │                                                                                                                             
+    108 │ |..@@...|                                                                                                                   
+    109 │ |..@@...|                                                                                                                   
+    110 │ |.......|                                                                                                                   
+    111 │ |.......|                                                                                                                   
+    112 │ |.......|                                                                                                                   
+    113 │ |....#..|                                                                                                                   
+    114 │ |....#..|                                                                                                                   
+    115 │ |....##.|                                                                                                                   
+    116 │ |....##.|                                                                                                                   
+    117 │ |..####.|                                                                                                                   
+    118 │ |.###...|                                                                                                                   
+    119 │ |..#....|                                                                                                                   
+    120 │ |.####..|                                                                                                                   
+    121 │ |....##.|                                                                                                                   
+    122 │ |....##.|                                                                                                                   
+    123 │ |....#..|                                                                                                                   
+    124 │ |..#.#..|                                                                                                                   
+    125 │ |..#.#..|                                                                                                                   
+    126 │ |#####..|                                                                                                                   
+    127 │ |..###..|                                                                                                                   
+    128 │ |...#...|                                                                                                                   
+    129 │ |..####.|                                                                                                                   
+    130 │ +-------+                                                                                                                   
+    131 │                                                                                                                             
+    132 │ |..@@@@.|                                                                                                                   
+    133 │ |.......|                                                                                                                   
+    134 │ |.......|                                                                                                                   
+    135 │ |.......|                                                                                                                   
+    136 │ |....#..|                                                                                                                   
+    137 │ |....#..|                                                                                                                   
+    138 │ |....##.|                                                                                                                   
+    139 │ |##..##.|                                                                                                                   
+    140 │ |######.|                                                                                                                   
+    141 │ |.###...|                                                                                                                   
+    142 │ |..#....|                                                                                                                   
+    143 │ |.####..|                                                                                                                   
+    144 │ |....##.|                                                                                                                   
+    145 │ |....##.|                                                                                                                   
+    146 │ |....#..|                                                                                                                   
+    147 │ |..#.#..|                                                                                                                   
+    148 │ |..#.#..|                                                                                                                   
+    149 │ |#####..|                                                                                                                   
+    150 │ |..###..|                                                                                                                   
+    151 │ |...#...|                                                                                                                   
+    152 │ |..####.|                                                                                                                   
+    153 │ +-------+                                                                                                                   
+
+To prove to the elephants your simulation is accurate, they want to know how tall the tower will get after 2022 rocks have stopped 
+(but before the 2023rd rock begins falling). In this example, the tower of rocks will be 3068 units tall.
+
+How many units tall will the tower of rocks be after 2022 rocks have stopped falling?

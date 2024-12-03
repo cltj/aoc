@@ -1,0 +1,309 @@
+─────────────────────────────────────────────────────── Day 11: Dumbo Octopus ────────────────────────────────────────────────────────
+
+You enter a large cavern full of rare bioluminescent dumbo octopuses! They seem to not like the Christmas lights on your submarine, so
+you turn them off for now.
+
+There are 100 octopuses arranged neatly in a 10 by 10 grid. Each octopus slowly gains energy over time and flashes brightly for a 
+moment when its energy is full. Although your lights are off, maybe you could navigate through the cave without disturbing the 
+octopuses if you could predict when the flashes of light will happen.
+
+Each octopus has an energy level - your submarine can remotely measure the energy level of each octopus (your puzzle input). For 
+example:
+
+     1 │ 5483143223                                                                                                                   
+     2 │ 2745854711                                                                                                                   
+     3 │ 5264556173                                                                                                                   
+     4 │ 6141336146                                                                                                                   
+     5 │ 6357385478                                                                                                                   
+     6 │ 4167524645                                                                                                                   
+     7 │ 2176841721                                                                                                                   
+     8 │ 6882881134                                                                                                                   
+     9 │ 4846848554                                                                                                                   
+    10 │ 5283751526                                                                                                                   
+
+The energy level of each octopus is a value between 0 and 9. Here, the top-left octopus has an energy level of 5, the bottom-right one
+has an energy level of 6, and so on.
+
+You can model the energy levels and flashes of light in steps. During a single step, the following occurs:
+
+- First, the energy level of each octopus increases by 1.                                                                             
+- Then, any octopus with an energy level greater than 9 flashes. This increases the energy level of all adjacent octopuses by 1,      
+  including octopuses that are diagonally adjacent. If this causes an octopus to have an energy level greater than 9, it also flashes.
+  This process continues as long as new octopuses keep having their energy level increased beyond 9. (An octopus can only flash at    
+  most once per step.)                                                                                                                
+- Finally, any octopus that flashed during this step has its energy level set to 0, as it used all of its energy to flash.            
+
+Adjacent flashes can cause an octopus to flash on a step even if it begins that step with very little energy. Consider the middle 
+octopus with 1 energy in this situation:
+
+     1 │ Before any steps:                                                                                                            
+     2 │ 11111                                                                                                                        
+     3 │ 19991                                                                                                                        
+     4 │ 19191                                                                                                                        
+     5 │ 19991                                                                                                                        
+     6 │ 11111                                                                                                                        
+     7 │                                                                                                                              
+     8 │ After step 1:                                                                                                                
+     9 │ 34543                                                                                                                        
+    10 │ 40004                                                                                                                        
+    11 │ 50005                                                                                                                        
+    12 │ 40004                                                                                                                        
+    13 │ 34543                                                                                                                        
+    14 │                                                                                                                              
+    15 │ After step 2:                                                                                                                
+    16 │ 45654                                                                                                                        
+    17 │ 51115                                                                                                                        
+    18 │ 61116                                                                                                                        
+    19 │ 51115                                                                                                                        
+    20 │ 45654                                                                                                                        
+
+An octopus is highlighted when it flashed during the given step.
+
+Here is how the larger example above progresses:
+
+      1 │ Before any steps:                                                                                                           
+      2 │ 5483143223                                                                                                                  
+      3 │ 2745854711                                                                                                                  
+      4 │ 5264556173                                                                                                                  
+      5 │ 6141336146                                                                                                                  
+      6 │ 6357385478                                                                                                                  
+      7 │ 4167524645                                                                                                                  
+      8 │ 2176841721                                                                                                                  
+      9 │ 6882881134                                                                                                                  
+     10 │ 4846848554                                                                                                                  
+     11 │ 5283751526                                                                                                                  
+     12 │                                                                                                                             
+     13 │ After step 1:                                                                                                               
+     14 │ 6594254334                                                                                                                  
+     15 │ 3856965822                                                                                                                  
+     16 │ 6375667284                                                                                                                  
+     17 │ 7252447257                                                                                                                  
+     18 │ 7468496589                                                                                                                  
+     19 │ 5278635756                                                                                                                  
+     20 │ 3287952832                                                                                                                  
+     21 │ 7993992245                                                                                                                  
+     22 │ 5957959665                                                                                                                  
+     23 │ 6394862637                                                                                                                  
+     24 │                                                                                                                             
+     25 │ After step 2:                                                                                                               
+     26 │ 8807476555                                                                                                                  
+     27 │ 5089087054                                                                                                                  
+     28 │ 8597889608                                                                                                                  
+     29 │ 8485769600                                                                                                                  
+     30 │ 8700908800                                                                                                                  
+     31 │ 6600088989                                                                                                                  
+     32 │ 6800005943                                                                                                                  
+     33 │ 0000007456                                                                                                                  
+     34 │ 9000000876                                                                                                                  
+     35 │ 8700006848                                                                                                                  
+     36 │                                                                                                                             
+     37 │ After step 3:                                                                                                               
+     38 │ 0050900866                                                                                                                  
+     39 │ 8500800575                                                                                                                  
+     40 │ 9900000039                                                                                                                  
+     41 │ 9700000041                                                                                                                  
+     42 │ 9935080063                                                                                                                  
+     43 │ 7712300000                                                                                                                  
+     44 │ 7911250009                                                                                                                  
+     45 │ 2211130000                                                                                                                  
+     46 │ 0421125000                                                                                                                  
+     47 │ 0021119000                                                                                                                  
+     48 │                                                                                                                             
+     49 │ After step 4:                                                                                                               
+     50 │ 2263031977                                                                                                                  
+     51 │ 0923031697                                                                                                                  
+     52 │ 0032221150                                                                                                                  
+     53 │ 0041111163                                                                                                                  
+     54 │ 0076191174                                                                                                                  
+     55 │ 0053411122                                                                                                                  
+     56 │ 0042361120                                                                                                                  
+     57 │ 5532241122                                                                                                                  
+     58 │ 1532247211                                                                                                                  
+     59 │ 1132230211                                                                                                                  
+     60 │                                                                                                                             
+     61 │ After step 5:                                                                                                               
+     62 │ 4484144000                                                                                                                  
+     63 │ 2044144000                                                                                                                  
+     64 │ 2253333493                                                                                                                  
+     65 │ 1152333274                                                                                                                  
+     66 │ 1187303285                                                                                                                  
+     67 │ 1164633233                                                                                                                  
+     68 │ 1153472231                                                                                                                  
+     69 │ 6643352233                                                                                                                  
+     70 │ 2643358322                                                                                                                  
+     71 │ 2243341322                                                                                                                  
+     72 │                                                                                                                             
+     73 │ After step 6:                                                                                                               
+     74 │ 5595255111                                                                                                                  
+     75 │ 3155255222                                                                                                                  
+     76 │ 3364444605                                                                                                                  
+     77 │ 2263444496                                                                                                                  
+     78 │ 2298414396                                                                                                                  
+     79 │ 2275744344                                                                                                                  
+     80 │ 2264583342                                                                                                                  
+     81 │ 7754463344                                                                                                                  
+     82 │ 3754469433                                                                                                                  
+     83 │ 3354452433                                                                                                                  
+     84 │                                                                                                                             
+     85 │ After step 7:                                                                                                               
+     86 │ 6707366222                                                                                                                  
+     87 │ 4377366333                                                                                                                  
+     88 │ 4475555827                                                                                                                  
+     89 │ 3496655709                                                                                                                  
+     90 │ 3500625609                                                                                                                  
+     91 │ 3509955566                                                                                                                  
+     92 │ 3486694453                                                                                                                  
+     93 │ 8865585555                                                                                                                  
+     94 │ 4865580644                                                                                                                  
+     95 │ 4465574644                                                                                                                  
+     96 │                                                                                                                             
+     97 │ After step 8:                                                                                                               
+     98 │ 7818477333                                                                                                                  
+     99 │ 5488477444                                                                                                                  
+    100 │ 5697666949                                                                                                                  
+    101 │ 4608766830                                                                                                                  
+    102 │ 4734946730                                                                                                                  
+    103 │ 4740097688                                                                                                                  
+    104 │ 6900007564                                                                                                                  
+    105 │ 0000009666                                                                                                                  
+    106 │ 8000004755                                                                                                                  
+    107 │ 6800007755                                                                                                                  
+    108 │                                                                                                                             
+    109 │ After step 9:                                                                                                               
+    110 │ 9060000644                                                                                                                  
+    111 │ 7800000976                                                                                                                  
+    112 │ 6900000080                                                                                                                  
+    113 │ 5840000082                                                                                                                  
+    114 │ 5858000093                                                                                                                  
+    115 │ 6962400000                                                                                                                  
+    116 │ 8021250009                                                                                                                  
+    117 │ 2221130009                                                                                                                  
+    118 │ 9111128097                                                                                                                  
+    119 │ 7911119976                                                                                                                  
+    120 │                                                                                                                             
+    121 │ After step 10:                                                                                                              
+    122 │ 0481112976                                                                                                                  
+    123 │ 0031112009                                                                                                                  
+    124 │ 0041112504                                                                                                                  
+    125 │ 0081111406                                                                                                                  
+    126 │ 0099111306                                                                                                                  
+    127 │ 0093511233                                                                                                                  
+    128 │ 0442361130                                                                                                                  
+    129 │ 5532252350                                                                                                                  
+    130 │ 0532250600                                                                                                                  
+    131 │ 0032240000                                                                                                                  
+
+After step 10, there have been a total of 204 flashes. Fast forwarding, here is the same configuration every 10 steps:
+
+      1 │ After step 20:                                                                                                              
+      2 │ 3936556452                                                                                                                  
+      3 │ 5686556806                                                                                                                  
+      4 │ 4496555690                                                                                                                  
+      5 │ 4448655580                                                                                                                  
+      6 │ 4456865570                                                                                                                  
+      7 │ 5680086577                                                                                                                  
+      8 │ 7000009896                                                                                                                  
+      9 │ 0000000344                                                                                                                  
+     10 │ 6000000364                                                                                                                  
+     11 │ 4600009543                                                                                                                  
+     12 │                                                                                                                             
+     13 │ After step 30:                                                                                                              
+     14 │ 0643334118                                                                                                                  
+     15 │ 4253334611                                                                                                                  
+     16 │ 3374333458                                                                                                                  
+     17 │ 2225333337                                                                                                                  
+     18 │ 2229333338                                                                                                                  
+     19 │ 2276733333                                                                                                                  
+     20 │ 2754574565                                                                                                                  
+     21 │ 5544458511                                                                                                                  
+     22 │ 9444447111                                                                                                                  
+     23 │ 7944446119                                                                                                                  
+     24 │                                                                                                                             
+     25 │ After step 40:                                                                                                              
+     26 │ 6211111981                                                                                                                  
+     27 │ 0421111119                                                                                                                  
+     28 │ 0042111115                                                                                                                  
+     29 │ 0003111115                                                                                                                  
+     30 │ 0003111116                                                                                                                  
+     31 │ 0065611111                                                                                                                  
+     32 │ 0532351111                                                                                                                  
+     33 │ 3322234597                                                                                                                  
+     34 │ 2222222976                                                                                                                  
+     35 │ 2222222762                                                                                                                  
+     36 │                                                                                                                             
+     37 │ After step 50:                                                                                                              
+     38 │ 9655556447                                                                                                                  
+     39 │ 4865556805                                                                                                                  
+     40 │ 4486555690                                                                                                                  
+     41 │ 4458655580                                                                                                                  
+     42 │ 4574865570                                                                                                                  
+     43 │ 5700086566                                                                                                                  
+     44 │ 6000009887                                                                                                                  
+     45 │ 8000000533                                                                                                                  
+     46 │ 6800000633                                                                                                                  
+     47 │ 5680000538                                                                                                                  
+     48 │                                                                                                                             
+     49 │ After step 60:                                                                                                              
+     50 │ 2533334200                                                                                                                  
+     51 │ 2743334640                                                                                                                  
+     52 │ 2264333458                                                                                                                  
+     53 │ 2225333337                                                                                                                  
+     54 │ 2225333338                                                                                                                  
+     55 │ 2287833333                                                                                                                  
+     56 │ 3854573455                                                                                                                  
+     57 │ 1854458611                                                                                                                  
+     58 │ 1175447111                                                                                                                  
+     59 │ 1115446111                                                                                                                  
+     60 │                                                                                                                             
+     61 │ After step 70:                                                                                                              
+     62 │ 8211111164                                                                                                                  
+     63 │ 0421111166                                                                                                                  
+     64 │ 0042111114                                                                                                                  
+     65 │ 0004211115                                                                                                                  
+     66 │ 0000211116                                                                                                                  
+     67 │ 0065611111                                                                                                                  
+     68 │ 0532351111                                                                                                                  
+     69 │ 7322235117                                                                                                                  
+     70 │ 5722223475                                                                                                                  
+     71 │ 4572222754                                                                                                                  
+     72 │                                                                                                                             
+     73 │ After step 80:                                                                                                              
+     74 │ 1755555697                                                                                                                  
+     75 │ 5965555609                                                                                                                  
+     76 │ 4486555680                                                                                                                  
+     77 │ 4458655580                                                                                                                  
+     78 │ 4570865570                                                                                                                  
+     79 │ 5700086566                                                                                                                  
+     80 │ 7000008666                                                                                                                  
+     81 │ 0000000990                                                                                                                  
+     82 │ 0000000800                                                                                                                  
+     83 │ 0000000000                                                                                                                  
+     84 │                                                                                                                             
+     85 │ After step 90:                                                                                                              
+     86 │ 7433333522                                                                                                                  
+     87 │ 2643333522                                                                                                                  
+     88 │ 2264333458                                                                                                                  
+     89 │ 2226433337                                                                                                                  
+     90 │ 2222433338                                                                                                                  
+     91 │ 2287833333                                                                                                                  
+     92 │ 2854573333                                                                                                                  
+     93 │ 4854458333                                                                                                                  
+     94 │ 3387779333                                                                                                                  
+     95 │ 3333333333                                                                                                                  
+     96 │                                                                                                                             
+     97 │ After step 100:                                                                                                             
+     98 │ 0397666866                                                                                                                  
+     99 │ 0749766918                                                                                                                  
+    100 │ 0053976933                                                                                                                  
+    101 │ 0004297822                                                                                                                  
+    102 │ 0004229892                                                                                                                  
+    103 │ 0053222877                                                                                                                  
+    104 │ 0532222966                                                                                                                  
+    105 │ 9322228966                                                                                                                  
+    106 │ 7922286866                                                                                                                  
+    107 │ 6789998766                                                                                                                  
+
+After 100 steps, there have been a total of 1656 flashes.
+
+Given the starting energy levels of the dumbo octopuses in your cavern, simulate 100 steps. How many total flashes are there after 100
+steps?

@@ -1,0 +1,385 @@
+─────────────────────────────────────────────────────── Day 19: Beacon Scanner ───────────────────────────────────────────────────────
+
+As your probe drifted down through this area, it released an assortment of beacons and scanners into the water. It's difficult to 
+navigate in the pitch black open waters of the ocean trench, but if you can build a map of the trench using data from the scanners, 
+you should be able to safely reach the bottom.
+
+The beacons and scanners float motionless in the water; they're designed to maintain the same position for long periods of time. Each 
+scanner is capable of detecting all beacons in a large cube centered on the scanner; beacons that are at most 1000 units away from the
+scanner in each of the three axes (x, y, and z) have their precise position determined relative to the scanner. However, scanners 
+cannot detect other scanners. The submarine has automatically summarized the relative positions of beacons detected by each scanner 
+(your puzzle input).
+
+For example, if a scanner is at x,y,z coordinates 500,0,-500 and there are beacons at -500,1000,-1500 and 1501,0,-500, the scanner 
+could report that the first beacon is at -1000,1000,-1000 (relative to the scanner) but would not detect the second beacon at all.
+
+Unfortunately, while each scanner can report the positions of all detected beacons relative to itself, the scanners do not know their 
+own position. You'll need to determine the positions of the beacons and scanners yourself.
+
+The scanners and beacons map a single contiguous 3d region. This region can be reconstructed by finding pairs of scanners that have 
+overlapping detection regions such that there are at least 12 beacons that both scanners detect within the overlap. By establishing 12
+common beacons, you can precisely determine where the scanners are relative to each other, allowing you to reconstruct the beacon map 
+one scanner at a time.
+
+For a moment, consider only two dimensions. Suppose you have the following scanner reports:
+
+    1 │ --- scanner 0 ---                                                                                                             
+    2 │ 0,2                                                                                                                           
+    3 │ 4,1                                                                                                                           
+    4 │ 3,3                                                                                                                           
+    5 │                                                                                                                               
+    6 │ --- scanner 1 ---                                                                                                             
+    7 │ -1,-1                                                                                                                         
+    8 │ -5,0                                                                                                                          
+    9 │ -2,1                                                                                                                          
+
+Drawing x increasing rightward, y increasing upward, scanners as S, and beacons as B, scanner 0 detects this:
+
+    1 │ ...B.                                                                                                                         
+    2 │ B....                                                                                                                         
+    3 │ ....B                                                                                                                         
+    4 │ S....                                                                                                                         
+
+Scanner 1 detects this:
+
+    1 │ ...B..                                                                                                                        
+    2 │ B....S                                                                                                                        
+    3 │ ....B.                                                                                                                        
+
+For this example, assume scanners only need 3 overlapping beacons. Then, the beacons visible to both scanners overlap to produce the 
+following complete map:
+
+    1 │ ...B..                                                                                                                        
+    2 │ B....S                                                                                                                        
+    3 │ ....B.                                                                                                                        
+    4 │ S.....                                                                                                                        
+
+Unfortunately, there's a second problem: the scanners also don't know their rotation or facing direction. Due to magnetic alignment, 
+each scanner is rotated some integer number of 90-degree turns around all of the x, y, and z axes. That is, one scanner might call a 
+direction positive x, while another scanner might call that direction negative y. Or, two scanners might agree on which direction is 
+positive x, but one scanner might be upside-down from the perspective of the other scanner. In total, each scanner could be in any of 
+24 different orientations: facing positive or negative x, y, or z, and considering any of four directions "up" from that facing.
+
+For example, here is an arrangement of beacons as seen from a scanner in the same position but in different orientations:
+
+     1 │ --- scanner 0 ---                                                                                                            
+     2 │ -1,-1,1                                                                                                                      
+     3 │ -2,-2,2                                                                                                                      
+     4 │ -3,-3,3                                                                                                                      
+     5 │ -2,-3,1                                                                                                                      
+     6 │ 5,6,-4                                                                                                                       
+     7 │ 8,0,7                                                                                                                        
+     8 │                                                                                                                              
+     9 │ --- scanner 0 ---                                                                                                            
+    10 │ 1,-1,1                                                                                                                       
+    11 │ 2,-2,2                                                                                                                       
+    12 │ 3,-3,3                                                                                                                       
+    13 │ 2,-1,3                                                                                                                       
+    14 │ -5,4,-6                                                                                                                      
+    15 │ -8,-7,0                                                                                                                      
+    16 │                                                                                                                              
+    17 │ --- scanner 0 ---                                                                                                            
+    18 │ -1,-1,-1                                                                                                                     
+    19 │ -2,-2,-2                                                                                                                     
+    20 │ -3,-3,-3                                                                                                                     
+    21 │ -1,-3,-2                                                                                                                     
+    22 │ 4,6,5                                                                                                                        
+    23 │ -7,0,8                                                                                                                       
+    24 │                                                                                                                              
+    25 │ --- scanner 0 ---                                                                                                            
+    26 │ 1,1,-1                                                                                                                       
+    27 │ 2,2,-2                                                                                                                       
+    28 │ 3,3,-3                                                                                                                       
+    29 │ 1,3,-2                                                                                                                       
+    30 │ -4,-6,5                                                                                                                      
+    31 │ 7,0,8                                                                                                                        
+    32 │                                                                                                                              
+    33 │ --- scanner 0 ---                                                                                                            
+    34 │ 1,1,1                                                                                                                        
+    35 │ 2,2,2                                                                                                                        
+    36 │ 3,3,3                                                                                                                        
+    37 │ 3,1,2                                                                                                                        
+    38 │ -6,-4,-5                                                                                                                     
+    39 │ 0,7,-8                                                                                                                       
+
+By finding pairs of scanners that both see at least 12 of the same beacons, you can assemble the entire map. For example, consider the
+following report:
+
+      1 │ --- scanner 0 ---                                                                                                           
+      2 │ 404,-588,-901                                                                                                               
+      3 │ 528,-643,409                                                                                                                
+      4 │ -838,591,734                                                                                                                
+      5 │ 390,-675,-793                                                                                                               
+      6 │ -537,-823,-458                                                                                                              
+      7 │ -485,-357,347                                                                                                               
+      8 │ -345,-311,381                                                                                                               
+      9 │ -661,-816,-575                                                                                                              
+     10 │ -876,649,763                                                                                                                
+     11 │ -618,-824,-621                                                                                                              
+     12 │ 553,345,-567                                                                                                                
+     13 │ 474,580,667                                                                                                                 
+     14 │ -447,-329,318                                                                                                               
+     15 │ -584,868,-557                                                                                                               
+     16 │ 544,-627,-890                                                                                                               
+     17 │ 564,392,-477                                                                                                                
+     18 │ 455,729,728                                                                                                                 
+     19 │ -892,524,684                                                                                                                
+     20 │ -689,845,-530                                                                                                               
+     21 │ 423,-701,434                                                                                                                
+     22 │ 7,-33,-71                                                                                                                   
+     23 │ 630,319,-379                                                                                                                
+     24 │ 443,580,662                                                                                                                 
+     25 │ -789,900,-551                                                                                                               
+     26 │ 459,-707,401                                                                                                                
+     27 │                                                                                                                             
+     28 │ --- scanner 1 ---                                                                                                           
+     29 │ 686,422,578                                                                                                                 
+     30 │ 605,423,415                                                                                                                 
+     31 │ 515,917,-361                                                                                                                
+     32 │ -336,658,858                                                                                                                
+     33 │ 95,138,22                                                                                                                   
+     34 │ -476,619,847                                                                                                                
+     35 │ -340,-569,-846                                                                                                              
+     36 │ 567,-361,727                                                                                                                
+     37 │ -460,603,-452                                                                                                               
+     38 │ 669,-402,600                                                                                                                
+     39 │ 729,430,532                                                                                                                 
+     40 │ -500,-761,534                                                                                                               
+     41 │ -322,571,750                                                                                                                
+     42 │ -466,-666,-811                                                                                                              
+     43 │ -429,-592,574                                                                                                               
+     44 │ -355,545,-477                                                                                                               
+     45 │ 703,-491,-529                                                                                                               
+     46 │ -328,-685,520                                                                                                               
+     47 │ 413,935,-424                                                                                                                
+     48 │ -391,539,-444                                                                                                               
+     49 │ 586,-435,557                                                                                                                
+     50 │ -364,-763,-893                                                                                                              
+     51 │ 807,-499,-711                                                                                                               
+     52 │ 755,-354,-619                                                                                                               
+     53 │ 553,889,-390                                                                                                                
+     54 │                                                                                                                             
+     55 │ --- scanner 2 ---                                                                                                           
+     56 │ 649,640,665                                                                                                                 
+     57 │ 682,-795,504                                                                                                                
+     58 │ -784,533,-524                                                                                                               
+     59 │ -644,584,-595                                                                                                               
+     60 │ -588,-843,648                                                                                                               
+     61 │ -30,6,44                                                                                                                    
+     62 │ -674,560,763                                                                                                                
+     63 │ 500,723,-460                                                                                                                
+     64 │ 609,671,-379                                                                                                                
+     65 │ -555,-800,653                                                                                                               
+     66 │ -675,-892,-343                                                                                                              
+     67 │ 697,-426,-610                                                                                                               
+     68 │ 578,704,681                                                                                                                 
+     69 │ 493,664,-388                                                                                                                
+     70 │ -671,-858,530                                                                                                               
+     71 │ -667,343,800                                                                                                                
+     72 │ 571,-461,-707                                                                                                               
+     73 │ -138,-166,112                                                                                                               
+     74 │ -889,563,-600                                                                                                               
+     75 │ 646,-828,498                                                                                                                
+     76 │ 640,759,510                                                                                                                 
+     77 │ -630,509,768                                                                                                                
+     78 │ -681,-892,-333                                                                                                              
+     79 │ 673,-379,-804                                                                                                               
+     80 │ -742,-814,-386                                                                                                              
+     81 │ 577,-820,562                                                                                                                
+     82 │                                                                                                                             
+     83 │ --- scanner 3 ---                                                                                                           
+     84 │ -589,542,597                                                                                                                
+     85 │ 605,-692,669                                                                                                                
+     86 │ -500,565,-823                                                                                                               
+     87 │ -660,373,557                                                                                                                
+     88 │ -458,-679,-417                                                                                                              
+     89 │ -488,449,543                                                                                                                
+     90 │ -626,468,-788                                                                                                               
+     91 │ 338,-750,-386                                                                                                               
+     92 │ 528,-832,-391                                                                                                               
+     93 │ 562,-778,733                                                                                                                
+     94 │ -938,-730,414                                                                                                               
+     95 │ 543,643,-506                                                                                                                
+     96 │ -524,371,-870                                                                                                               
+     97 │ 407,773,750                                                                                                                 
+     98 │ -104,29,83                                                                                                                  
+     99 │ 378,-903,-323                                                                                                               
+    100 │ -778,-728,485                                                                                                               
+    101 │ 426,699,580                                                                                                                 
+    102 │ -438,-605,-362                                                                                                              
+    103 │ -469,-447,-387                                                                                                              
+    104 │ 509,732,623                                                                                                                 
+    105 │ 647,635,-688                                                                                                                
+    106 │ -868,-804,481                                                                                                               
+    107 │ 614,-800,639                                                                                                                
+    108 │ 595,780,-596                                                                                                                
+    109 │                                                                                                                             
+    110 │ --- scanner 4 ---                                                                                                           
+    111 │ 727,592,562                                                                                                                 
+    112 │ -293,-554,779                                                                                                               
+    113 │ 441,611,-461                                                                                                                
+    114 │ -714,465,-776                                                                                                               
+    115 │ -743,427,-804                                                                                                               
+    116 │ -660,-479,-426                                                                                                              
+    117 │ 832,-632,460                                                                                                                
+    118 │ 927,-485,-438                                                                                                               
+    119 │ 408,393,-506                                                                                                                
+    120 │ 466,436,-512                                                                                                                
+    121 │ 110,16,151                                                                                                                  
+    122 │ -258,-428,682                                                                                                               
+    123 │ -393,719,612                                                                                                                
+    124 │ -211,-452,876                                                                                                               
+    125 │ 808,-476,-593                                                                                                               
+    126 │ -575,615,604                                                                                                                
+    127 │ -485,667,467                                                                                                                
+    128 │ -680,325,-822                                                                                                               
+    129 │ -627,-443,-432                                                                                                              
+    130 │ 872,-547,-609                                                                                                               
+    131 │ 833,512,582                                                                                                                 
+    132 │ 807,604,487                                                                                                                 
+    133 │ 839,-516,451                                                                                                                
+    134 │ 891,-625,532                                                                                                                
+    135 │ -652,-548,-490                                                                                                              
+    136 │ 30,-46,-14                                                                                                                  
+
+Because all coordinates are relative, in this example, all "absolute" positions will be expressed relative to scanner 0 (using the 
+orientation of scanner 0 and as if scanner 0 is at coordinates 0,0,0).
+
+Scanners 0 and 1 have overlapping detection cubes; the 12 beacons they both detect (relative to scanner 0) are at the following 
+coordinates:
+
+     1 │ -618,-824,-621                                                                                                               
+     2 │ -537,-823,-458                                                                                                               
+     3 │ -447,-329,318                                                                                                                
+     4 │ 404,-588,-901                                                                                                                
+     5 │ 544,-627,-890                                                                                                                
+     6 │ 528,-643,409                                                                                                                 
+     7 │ -661,-816,-575                                                                                                               
+     8 │ 390,-675,-793                                                                                                                
+     9 │ 423,-701,434                                                                                                                 
+    10 │ -345,-311,381                                                                                                                
+    11 │ 459,-707,401                                                                                                                 
+    12 │ -485,-357,347                                                                                                                
+
+These same 12 beacons (in the same order) but from the perspective of scanner 1 are:
+
+     1 │ 686,422,578                                                                                                                  
+     2 │ 605,423,415                                                                                                                  
+     3 │ 515,917,-361                                                                                                                 
+     4 │ -336,658,858                                                                                                                 
+     5 │ -476,619,847                                                                                                                 
+     6 │ -460,603,-452                                                                                                                
+     7 │ 729,430,532                                                                                                                  
+     8 │ -322,571,750                                                                                                                 
+     9 │ -355,545,-477                                                                                                                
+    10 │ 413,935,-424                                                                                                                 
+    11 │ -391,539,-444                                                                                                                
+    12 │ 553,889,-390                                                                                                                 
+
+Because of this, scanner 1 must be at 68,-1246,-43 (relative to scanner 0).
+
+Scanner 4 overlaps with scanner 1; the 12 beacons they both detect (relative to scanner 0) are:
+
+     1 │ 459,-707,401                                                                                                                 
+     2 │ -739,-1745,668                                                                                                               
+     3 │ -485,-357,347                                                                                                                
+     4 │ 432,-2009,850                                                                                                                
+     5 │ 528,-643,409                                                                                                                 
+     6 │ 423,-701,434                                                                                                                 
+     7 │ -345,-311,381                                                                                                                
+     8 │ 408,-1815,803                                                                                                                
+     9 │ 534,-1912,768                                                                                                                
+    10 │ -687,-1600,576                                                                                                               
+    11 │ -447,-329,318                                                                                                                
+    12 │ -635,-1737,486                                                                                                               
+
+So, scanner 4 is at -20,-1133,1061 (relative to scanner 0).
+
+Following this process, scanner 2 must be at 1105,-1205,1229 (relative to scanner 0) and scanner 3 must be at -92,-2380,-20 (relative 
+to scanner 0).
+
+The full list of beacons (relative to scanner 0) is:
+
+     1 │ -892,524,684                                                                                                                 
+     2 │ -876,649,763                                                                                                                 
+     3 │ -838,591,734                                                                                                                 
+     4 │ -789,900,-551                                                                                                                
+     5 │ -739,-1745,668                                                                                                               
+     6 │ -706,-3180,-659                                                                                                              
+     7 │ -697,-3072,-689                                                                                                              
+     8 │ -689,845,-530                                                                                                                
+     9 │ -687,-1600,576                                                                                                               
+    10 │ -661,-816,-575                                                                                                               
+    11 │ -654,-3158,-753                                                                                                              
+    12 │ -635,-1737,486                                                                                                               
+    13 │ -631,-672,1502                                                                                                               
+    14 │ -624,-1620,1868                                                                                                              
+    15 │ -620,-3212,371                                                                                                               
+    16 │ -618,-824,-621                                                                                                               
+    17 │ -612,-1695,1788                                                                                                              
+    18 │ -601,-1648,-643                                                                                                              
+    19 │ -584,868,-557                                                                                                                
+    20 │ -537,-823,-458                                                                                                               
+    21 │ -532,-1715,1894                                                                                                              
+    22 │ -518,-1681,-600                                                                                                              
+    23 │ -499,-1607,-770                                                                                                              
+    24 │ -485,-357,347                                                                                                                
+    25 │ -470,-3283,303                                                                                                               
+    26 │ -456,-621,1527                                                                                                               
+    27 │ -447,-329,318                                                                                                                
+    28 │ -430,-3130,366                                                                                                               
+    29 │ -413,-627,1469                                                                                                               
+    30 │ -345,-311,381                                                                                                                
+    31 │ -36,-1284,1171                                                                                                               
+    32 │ -27,-1108,-65                                                                                                                
+    33 │ 7,-33,-71                                                                                                                    
+    34 │ 12,-2351,-103                                                                                                                
+    35 │ 26,-1119,1091                                                                                                                
+    36 │ 346,-2985,342                                                                                                                
+    37 │ 366,-3059,397                                                                                                                
+    38 │ 377,-2827,367                                                                                                                
+    39 │ 390,-675,-793                                                                                                                
+    40 │ 396,-1931,-563                                                                                                               
+    41 │ 404,-588,-901                                                                                                                
+    42 │ 408,-1815,803                                                                                                                
+    43 │ 423,-701,434                                                                                                                 
+    44 │ 432,-2009,850                                                                                                                
+    45 │ 443,580,662                                                                                                                  
+    46 │ 455,729,728                                                                                                                  
+    47 │ 456,-540,1869                                                                                                                
+    48 │ 459,-707,401                                                                                                                 
+    49 │ 465,-695,1988                                                                                                                
+    50 │ 474,580,667                                                                                                                  
+    51 │ 496,-1584,1900                                                                                                               
+    52 │ 497,-1838,-617                                                                                                               
+    53 │ 527,-524,1933                                                                                                                
+    54 │ 528,-643,409                                                                                                                 
+    55 │ 534,-1912,768                                                                                                                
+    56 │ 544,-627,-890                                                                                                                
+    57 │ 553,345,-567                                                                                                                 
+    58 │ 564,392,-477                                                                                                                 
+    59 │ 568,-2007,-577                                                                                                               
+    60 │ 605,-1665,1952                                                                                                               
+    61 │ 612,-1593,1893                                                                                                               
+    62 │ 630,319,-379                                                                                                                 
+    63 │ 686,-3108,-505                                                                                                               
+    64 │ 776,-3184,-501                                                                                                               
+    65 │ 846,-3110,-434                                                                                                               
+    66 │ 1135,-1161,1235                                                                                                              
+    67 │ 1243,-1093,1063                                                                                                              
+    68 │ 1660,-552,429                                                                                                                
+    69 │ 1693,-557,386                                                                                                                
+    70 │ 1735,-437,1738                                                                                                               
+    71 │ 1749,-1800,1813                                                                                                              
+    72 │ 1772,-405,1572                                                                                                               
+    73 │ 1776,-675,371                                                                                                                
+    74 │ 1779,-442,1789                                                                                                               
+    75 │ 1780,-1548,337                                                                                                               
+    76 │ 1786,-1538,337                                                                                                               
+    77 │ 1847,-1591,415                                                                                                               
+    78 │ 1889,-1729,1762                                                                                                              
+    79 │ 1994,-1805,1792                                                                                                              
+
+In total, there are 79 beacons.
+
+Assemble the full map of beacons. How many beacons are there?

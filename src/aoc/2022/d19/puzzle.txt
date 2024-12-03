@@ -1,0 +1,183 @@
+──────────────────────────────────────────────────── Day 19: Not Enough Minerals ─────────────────────────────────────────────────────
+
+Your scans show that the lava did indeed form obsidian!
+
+The wind has changed direction enough to stop sending lava droplets toward you, so you and the elephants exit the cave. As you do, you
+notice a collection of geodes around the pond. Perhaps you could use the obsidian to create some geode-cracking robots and break them 
+open?
+
+To collect the obsidian from the bottom of the pond, you'll need waterproof obsidian-collecting robots. Fortunately, there is an 
+abundant amount of clay nearby that you can use to make them waterproof.
+
+In order to harvest the clay, you'll need special-purpose clay-collecting robots. To make any type of robot, you'll need ore, which is
+also plentiful but in the opposite direction from the clay.
+
+Collecting ore requires ore-collecting robots with big drills. Fortunately, you have exactly one ore-collecting robot in your pack 
+that you can use to kickstart the whole operation.
+
+Each robot can collect 1 of its resource type per minute. It also takes one minute for the robot factory (also conveniently from your 
+pack) to construct any type of robot, although it consumes the necessary resources available when construction begins.
+
+The robot factory has many blueprints (your puzzle input) you can choose from, but once you've configured it with a blueprint, you 
+can't change it. You'll need to work out which blueprint is best.
+
+For example:
+
+     1 │ Blueprint 1:                                                                                                                 
+     2 │   Each ore robot costs 4 ore.                                                                                                
+     3 │   Each clay robot costs 2 ore.                                                                                               
+     4 │   Each obsidian robot costs 3 ore and 14 clay.                                                                               
+     5 │   Each geode robot costs 2 ore and 7 obsidian.                                                                               
+     6 │                                                                                                                              
+     7 │ Blueprint 2:                                                                                                                 
+     8 │   Each ore robot costs 2 ore.                                                                                                
+     9 │   Each clay robot costs 3 ore.                                                                                               
+    10 │   Each obsidian robot costs 3 ore and 8 clay.                                                                                
+    11 │   Each geode robot costs 3 ore and 12 obsidian.                                                                              
+
+(Blueprints have been line-wrapped here for legibility. The robot factory's actual assortment of blueprints are provided one blueprint
+per line.)
+
+The elephants are starting to look hungry, so you shouldn't take too long; you need to figure out which blueprint would maximize the 
+number of opened geodes after 24 minutes by figuring out which robots to build and when to build them.
+
+Using blueprint 1 in the example above, the largest number of geodes you could open in 24 minutes is 9. One way to achieve that is:
+
+      1 │ == Minute 1 ==                                                                                                              
+      2 │ 1 ore-collecting robot collects 1 ore; you now have 1 ore.                                                                  
+      3 │                                                                                                                             
+      4 │ == Minute 2 ==                                                                                                              
+      5 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+      6 │                                                                                                                             
+      7 │ == Minute 3 ==                                                                                                              
+      8 │ Spend 2 ore to start building a clay-collecting robot.                                                                      
+      9 │ 1 ore-collecting robot collects 1 ore; you now have 1 ore.                                                                  
+     10 │ The new clay-collecting robot is ready; you now have 1 of them.                                                             
+     11 │                                                                                                                             
+     12 │ == Minute 4 ==                                                                                                              
+     13 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+     14 │ 1 clay-collecting robot collects 1 clay; you now have 1 clay.                                                               
+     15 │                                                                                                                             
+     16 │ == Minute 5 ==                                                                                                              
+     17 │ Spend 2 ore to start building a clay-collecting robot.                                                                      
+     18 │ 1 ore-collecting robot collects 1 ore; you now have 1 ore.                                                                  
+     19 │ 1 clay-collecting robot collects 1 clay; you now have 2 clay.                                                               
+     20 │ The new clay-collecting robot is ready; you now have 2 of them.                                                             
+     21 │                                                                                                                             
+     22 │ == Minute 6 ==                                                                                                              
+     23 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+     24 │ 2 clay-collecting robots collect 2 clay; you now have 4 clay.                                                               
+     25 │                                                                                                                             
+     26 │ == Minute 7 ==                                                                                                              
+     27 │ Spend 2 ore to start building a clay-collecting robot.                                                                      
+     28 │ 1 ore-collecting robot collects 1 ore; you now have 1 ore.                                                                  
+     29 │ 2 clay-collecting robots collect 2 clay; you now have 6 clay.                                                               
+     30 │ The new clay-collecting robot is ready; you now have 3 of them.                                                             
+     31 │                                                                                                                             
+     32 │ == Minute 8 ==                                                                                                              
+     33 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+     34 │ 3 clay-collecting robots collect 3 clay; you now have 9 clay.                                                               
+     35 │                                                                                                                             
+     36 │ == Minute 9 ==                                                                                                              
+     37 │ 1 ore-collecting robot collects 1 ore; you now have 3 ore.                                                                  
+     38 │ 3 clay-collecting robots collect 3 clay; you now have 12 clay.                                                              
+     39 │                                                                                                                             
+     40 │ == Minute 10 ==                                                                                                             
+     41 │ 1 ore-collecting robot collects 1 ore; you now have 4 ore.                                                                  
+     42 │ 3 clay-collecting robots collect 3 clay; you now have 15 clay.                                                              
+     43 │                                                                                                                             
+     44 │ == Minute 11 ==                                                                                                             
+     45 │ Spend 3 ore and 14 clay to start building an obsidian-collecting robot.                                                     
+     46 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+     47 │ 3 clay-collecting robots collect 3 clay; you now have 4 clay.                                                               
+     48 │ The new obsidian-collecting robot is ready; you now have 1 of them.                                                         
+     49 │                                                                                                                             
+     50 │ == Minute 12 ==                                                                                                             
+     51 │ Spend 2 ore to start building a clay-collecting robot.                                                                      
+     52 │ 1 ore-collecting robot collects 1 ore; you now have 1 ore.                                                                  
+     53 │ 3 clay-collecting robots collect 3 clay; you now have 7 clay.                                                               
+     54 │ 1 obsidian-collecting robot collects 1 obsidian; you now have 1 obsidian.                                                   
+     55 │ The new clay-collecting robot is ready; you now have 4 of them.                                                             
+     56 │                                                                                                                             
+     57 │ == Minute 13 ==                                                                                                             
+     58 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+     59 │ 4 clay-collecting robots collect 4 clay; you now have 11 clay.                                                              
+     60 │ 1 obsidian-collecting robot collects 1 obsidian; you now have 2 obsidian.                                                   
+     61 │                                                                                                                             
+     62 │ == Minute 14 ==                                                                                                             
+     63 │ 1 ore-collecting robot collects 1 ore; you now have 3 ore.                                                                  
+     64 │ 4 clay-collecting robots collect 4 clay; you now have 15 clay.                                                              
+     65 │ 1 obsidian-collecting robot collects 1 obsidian; you now have 3 obsidian.                                                   
+     66 │                                                                                                                             
+     67 │ == Minute 15 ==                                                                                                             
+     68 │ Spend 3 ore and 14 clay to start building an obsidian-collecting robot.                                                     
+     69 │ 1 ore-collecting robot collects 1 ore; you now have 1 ore.                                                                  
+     70 │ 4 clay-collecting robots collect 4 clay; you now have 5 clay.                                                               
+     71 │ 1 obsidian-collecting robot collects 1 obsidian; you now have 4 obsidian.                                                   
+     72 │ The new obsidian-collecting robot is ready; you now have 2 of them.                                                         
+     73 │                                                                                                                             
+     74 │ == Minute 16 ==                                                                                                             
+     75 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+     76 │ 4 clay-collecting robots collect 4 clay; you now have 9 clay.                                                               
+     77 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 6 obsidian.                                                   
+     78 │                                                                                                                             
+     79 │ == Minute 17 ==                                                                                                             
+     80 │ 1 ore-collecting robot collects 1 ore; you now have 3 ore.                                                                  
+     81 │ 4 clay-collecting robots collect 4 clay; you now have 13 clay.                                                              
+     82 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 8 obsidian.                                                   
+     83 │                                                                                                                             
+     84 │ == Minute 18 ==                                                                                                             
+     85 │ Spend 2 ore and 7 obsidian to start building a geode-cracking robot.                                                        
+     86 │ 1 ore-collecting robot collects 1 ore; you now have 2 ore.                                                                  
+     87 │ 4 clay-collecting robots collect 4 clay; you now have 17 clay.                                                              
+     88 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 3 obsidian.                                                   
+     89 │ The new geode-cracking robot is ready; you now have 1 of them.                                                              
+     90 │                                                                                                                             
+     91 │ == Minute 19 ==                                                                                                             
+     92 │ 1 ore-collecting robot collects 1 ore; you now have 3 ore.                                                                  
+     93 │ 4 clay-collecting robots collect 4 clay; you now have 21 clay.                                                              
+     94 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 5 obsidian.                                                   
+     95 │ 1 geode-cracking robot cracks 1 geode; you now have 1 open geode.                                                           
+     96 │                                                                                                                             
+     97 │ == Minute 20 ==                                                                                                             
+     98 │ 1 ore-collecting robot collects 1 ore; you now have 4 ore.                                                                  
+     99 │ 4 clay-collecting robots collect 4 clay; you now have 25 clay.                                                              
+    100 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 7 obsidian.                                                   
+    101 │ 1 geode-cracking robot cracks 1 geode; you now have 2 open geodes.                                                          
+    102 │                                                                                                                             
+    103 │ == Minute 21 ==                                                                                                             
+    104 │ Spend 2 ore and 7 obsidian to start building a geode-cracking robot.                                                        
+    105 │ 1 ore-collecting robot collects 1 ore; you now have 3 ore.                                                                  
+    106 │ 4 clay-collecting robots collect 4 clay; you now have 29 clay.                                                              
+    107 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 2 obsidian.                                                   
+    108 │ 1 geode-cracking robot cracks 1 geode; you now have 3 open geodes.                                                          
+    109 │ The new geode-cracking robot is ready; you now have 2 of them.                                                              
+    110 │                                                                                                                             
+    111 │ == Minute 22 ==                                                                                                             
+    112 │ 1 ore-collecting robot collects 1 ore; you now have 4 ore.                                                                  
+    113 │ 4 clay-collecting robots collect 4 clay; you now have 33 clay.                                                              
+    114 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 4 obsidian.                                                   
+    115 │ 2 geode-cracking robots crack 2 geodes; you now have 5 open geodes.                                                         
+    116 │                                                                                                                             
+    117 │ == Minute 23 ==                                                                                                             
+    118 │ 1 ore-collecting robot collects 1 ore; you now have 5 ore.                                                                  
+    119 │ 4 clay-collecting robots collect 4 clay; you now have 37 clay.                                                              
+    120 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 6 obsidian.                                                   
+    121 │ 2 geode-cracking robots crack 2 geodes; you now have 7 open geodes.                                                         
+    122 │                                                                                                                             
+    123 │ == Minute 24 ==                                                                                                             
+    124 │ 1 ore-collecting robot collects 1 ore; you now have 6 ore.                                                                  
+    125 │ 4 clay-collecting robots collect 4 clay; you now have 41 clay.                                                              
+    126 │ 2 obsidian-collecting robots collect 2 obsidian; you now have 8 obsidian.                                                   
+    127 │ 2 geode-cracking robots crack 2 geodes; you now have 9 open geodes.                                                         
+
+However, by using blueprint 2 in the example above, you could do even better: the largest number of geodes you could open in 24 
+minutes is 12.
+
+Determine the quality level of each blueprint by multiplying that blueprint's ID number with the largest number of geodes that can be 
+opened in 24 minutes using that blueprint. In this example, the first blueprint has ID 1 and can open 9 geodes, so its quality level 
+is 9. The second blueprint has ID 2 and can open 12 geodes, so its quality level is 24. Finally, if you add up the quality levels of 
+all of the blueprints in the list, you get 33.
+
+Determine the quality level of each blueprint using the largest number of geodes it could produce in 24 minutes. What do you get if 
+you add up the quality level of all of the blueprints in your list?
