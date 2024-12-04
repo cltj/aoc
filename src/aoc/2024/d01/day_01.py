@@ -7,9 +7,7 @@ data = extract_ints(raw)
 
 
 def separate_list(data: list[int]) -> tuple[list[int], list[int]]:
-    left_list = sorted(data[::2])
-    right_list = sorted(data[1::2])
-    return left_list, right_list
+    return sorted(data[::2]), sorted(data[1::2])
 
 
 def part_one(data: list[int]) -> int:

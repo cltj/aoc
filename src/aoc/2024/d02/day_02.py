@@ -5,8 +5,7 @@ raw = aoc_helper.fetch(2, 2024)
 
 
 def parse_raw(raw: str):
-    groups = raw.strip().split("\n")
-    return [list(map(int, group.split())) for group in groups]
+    return [list(map(int, group.split())) for group in raw.strip().split("\n")]
 
 
 data = parse_raw(raw)
@@ -27,17 +26,14 @@ def valid_check(lst):
 
 
 def problem_dampner(data):
-    valid_counter = 0
-    for lst in data:
-        if valid_check(lst):
-            valid_counter += 1
-        else:
-            for i in range(len(lst)):
-                new_lst = lst[:i] + lst[i + 1 :]
-                if valid_check(new_lst):
-                    valid_counter += 1
-                    break
-    return valid_counter
+    return sum(
+        (
+            1
+            if valid_check(lst)
+            else any(valid_check(lst[:i] + lst[i + 1 :]) for i in range(len(lst)))
+        )
+        for lst in data
+    )
 
 
 def part_one(data=data):

@@ -17,8 +17,7 @@ def process_parts(parts):
 
 
 def group_text(text):
-    parts = text.split("do")
-    return sum(process_parts(parts))
+    return sum(process_parts(text.split("do")))
 
 
 def part_one(data=data):
