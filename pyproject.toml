@@ -6,5 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "aoc-helper>=1.10.2",
+    "colorama>=0.4.6",
     "pandas>=2.2.3",
+    "pygame>=2.6.1",
 ]
